@@ -70,6 +70,9 @@
     justify-content: space-evenly;
     transition: 0.2s;
   }
+  .teacher-item a {
+    text-decoration: none;
+  }
   
   .teacher-item footer button:hover {
     background: var(--color-secundary-dark);

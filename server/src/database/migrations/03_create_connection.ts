@@ -12,11 +12,11 @@ export async function up(knex: Knex) {
             .onUpdate('CASCADE') // Atualiza em todas as suas aulas
             .onDelete('CASCADE') // Se o usuário for excluído da plataforma, todas suas aulas cadastradas tb saem
         table.timestamp('create_at')
-            .defaultTo('CURRENT_TIMESTAMP')
+            .defaultTo(knex.raw('CURRENT_TIMESTAMP'))
             .notNullable()
     })
 }
 
 export async function down(knex: Knex) {
-    return knex.schema.dropTable('classes_schedule')
+    return knex.schema.dropTable('connections')
 }

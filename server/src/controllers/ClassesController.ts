@@ -11,50 +11,36 @@ interface scheduleItem {
 
 export default class ClassesController {
 
-    async index(req: Request, res: Response){
-        const filters = req.query
-
-
+    async index(request: Request, response: Response) {
+        const filters = request.query;
+    
         const subject = filters.subject as string;
         const week_day = filters.week_day as string;
         const time = filters.time as string;
-
+    
         if (!filters.week_day || !filters.subject || !filters.time) {
-            return res.status(400).json({
-                error : 'Missing filters to search classes'
-            })
+          return response.status(400).json({
+            error: 'Missing filters to search classes'
+          })
         }
-        
-        const timeInMinutes = convertHourToMinutes(time)
-
+    
+        const timeInMinutes = convertHourToMinutes(time);
+    
         const classes = await db('classes')
-
-            // fazer uma query para schedels para ver se existe um horario disponivel, so retorna true para ir paras proximas requisiçoes se tudo bater
-            .whereExists(function(){
-                this.select('class_schedule.*')
-                    .from('class_schedule')
-                    //where inteiro, recomendado se uar o where existe
-                    .whereRaw('`class_schedule`.`class_id` = `classes`. `id`') // essa coluna esta dentro dessa tabela, tipo um join
-                    .whereRaw('`class_schedule`.`week_day` = ??' , [Number(week_day)]) // Cada parametro para ser concatenado precisa de um par de interrogaçoes
-                    // se o horario inicial bate com o atendimento
-                    .whereRaw('`class_schedule`.`from` <= ??', [timeInMinutes])
-                    .whereRaw('`class_schedule`.`from` > ??', [timeInMinutes])
-                    //
-                })
-
-
-
-            .where('classes.subject', '=', subject )
-            // pegar de dentro da tabela user, onde o id estrageiro da tabela de classes, seja igual a o user id
-            .join('users', 'classes.user_id', '=', 'users.id')
-            // todos os dados sendo trazidos, por isso o array
-            .select(['classes.*', 'users.*'])
-
-
-        console.log(timeInMinutes)
-
-        return res.json(classes)
-    }
+          .whereExists(function() {
+            this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('`class_schedule`.`class_id` = `classes`.`id`')
+            .whereRaw('`class_schedule`.`week_day` = ??', [Number(week_day)])
+            .whereRaw('`class_schedule`.`from` <= ??', [timeInMinutes])
+            .whereRaw('`class_schedule`.`to` > ??', [timeInMinutes])
+          })
+          .where('classes.subject', '=', subject)
+          .join('users', 'classes.user_id', '=', 'users.id')
+          .select(['classes.*', 'users.*']);
+    
+        return response.json(classes);
+      }
 
     async create(req: Request, res: Response) {
         const {

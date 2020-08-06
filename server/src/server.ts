@@ -5,6 +5,7 @@ import routes from './routes'
 // instância dos métodos express colocados na variável app 
 const app = express()
 // Falar pro express entender completamente json
+app.use(cors()) // pra conseguir acessar outras portas e se comunicar
 app.use(express.json())
 app.use(routes)
 

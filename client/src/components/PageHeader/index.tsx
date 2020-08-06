@@ -7,10 +7,11 @@ import backIcon from '../../assets/images/icons/back.svg';
 import './styles.css';
 
 interface PageHeaderProps {
-  title: string;
+  title: string
+  description?: string // ponto de interrogação na hora de dizer o tipo de dado desse atributo no componente, diz que não é obrigado a utilizar
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ title, children }) => {
+const PageHeader: React.FC<PageHeaderProps> = (props) => {
   return (
     <header className="page-header">
       <div className="top-bar-container">
@@ -21,9 +22,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, children }) => {
       </div>
 
       <div className="header-content">
-        <strong>{title}</strong>
+        <strong>{props.title}</strong>
+        {/* // se a primeira parte for verdadeira ele execulta a proxima, então é tipo um if  */}
+        { props.description && <p>{props.description}</p>}
       
-        {children}
+        {props.children}
       </div>
     </header>
   );
