@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { View, Image, Text } from 'react-native'
 
 import styles from './styles'
@@ -8,29 +8,36 @@ import { useNavigation } from '@react-navigation/native'
 import backIcon from '../../assets/images/icons/back.png'
 import logoImg from '../../assets/images/logo.png'
 
-interface PageHeaderProps{
+interface PageHeaderProps {
     title: string;
+    headerRight?: ReactNode; // QUER DIZER QUE SE PODE RECEBER UM COMPONENTE RACT // INTERROGAÇAO SIGNIFICA Q É OPCIONAL
 }
 
 
 
-const  PageHeader: React.FC<PageHeaderProps> = ({ title }) =>{
+const PageHeader: React.FC<PageHeaderProps> = ({ title, children, headerRight }) => {
 
     const { navigate } = useNavigation();
-    function handleGoBack(){
+    function handleGoBack() {
         navigate('Landing')
     }
-    return(
+    return (
         <View style={styles.container}>
             <View style={styles.topBar}>
                 <BorderlessButton onPress={handleGoBack}>
-                    <Image source={backIcon}  resizeMode="contain"/>
+                    <Image source={backIcon} resizeMode="contain" />
                 </BorderlessButton>
-                <Image source={logoImg}  resizeMode="contain"/>
+                <Image source={logoImg} resizeMode="contain" />
             </View>
-            <Text style={styles.title}>{title}</Text>
+
+            <View style={styles.header}>
+                <Text style={styles.title}>{title}</Text>
+                {headerRight}
+            </View>
+
+            {children}
         </View>
-    ) 
+    )
 
 }
 export default PageHeader

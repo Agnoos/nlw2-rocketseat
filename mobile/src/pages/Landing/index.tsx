@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Image, View, Text, TouchableOpacity } from 'react-native'
 import styles from './styles'
 import landingImage from '../../assets/images/landing.png'
@@ -10,9 +10,20 @@ import { RectButton } from 'react-native-gesture-handler'
 
 // Navegação, depois de ter importado todos os pacotes de navegaçao necessários
 import { useNavigation } from '@react-navigation/native'
+import api from '../../services/api'
 
 
 function Landing(){
+
+    const [totalConnections, setTotalConnections] = useState(0);
+
+    useEffect(() =>{
+        api.get('connections').then(res => {
+            const {total} = res.data;
+
+            setTotalConnections(total)
+        })
+    }, []);
 
     const navigation = useNavigation();
 
@@ -45,7 +56,7 @@ function Landing(){
             </View>
 
             <Text style={styles.totalConnections}>
-                Total de 2085 conexões já realizadas {' '}
+                Total de {totalConnections} conexões já realizadas {' '}
                 <Image source={heartIcon}/>
             </Text>
         </View>
